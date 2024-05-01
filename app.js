@@ -27,27 +27,61 @@ console.log("Aws region == ", process.env.AWS_REGION);
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// Function to format the labels into a readable, comma-separated list
+function formatLabels(labels) {
+	// Sort labels by Confidence from highest to lowest
+	const sortedLabels = labels.sort((a, b) => b.Confidence - a.Confidence);
+
+	// Map over sorted labels to create a list of strings with `Name` and `Confidence`
+	const labelStrings = sortedLabels.map(
+		(label) => `${label.Name} (${label.Confidence.toFixed(2)}%)`
+	);
+
+	// Join the list into a comma-separated string
+	return labelStrings.join(", ");
+}
+
 // Endpoint to upload and analyze image
-app.post("/analyze-image", upload.single("image"), async (req, res) => {
-	const params = {
-		Image: {
-			Bytes: req.file.buffer,
-		},
-		MaxLabels: 10, // Optional
-		MinConfidence: 75, // Optional
-	};
+app.post(
+	"/analyze-image",
+	upload.single("image"),
+	(req, res, next) => {
+		if (!req.file) {
+			return res.status(400).send("No file uploaded.");
+		}
+		next();
+	},
+	async (req, res) => {
+		const params = {
+			Image: {
+				Bytes: req.file.buffer,
+			},
+			MaxLabels: 10,
+			MinConfidence: 75,
+		};
 
-	const command = new DetectLabelsCommand(params);
+		try {
+			const data = await rekognitionClient.send(
+				new DetectLabelsCommand(params)
+			);
+			//console.log("Labels detected: ", data.Labels);
+			const formattedResponse = data.Labels.map((label) => ({
+				Name: label.Name,
+				Confidence: label.Confidence, // Round the confidence score for readability
+			}));
 
-	try {
-		const data = await rekognitionClient.send(command);
-		console.log("Labels detected: ", data.Labels);
-		res.send(data);
-	} catch (err) {
-		console.error("Error calling DetectLabels: ", err);
-		res.status(500).send(err);
+			res.send(formattedResponse);
+			// Use the function on the response object
+			const formattedLabels = formatLabels(formattedResponse);
+			console.log("Detected Labels:", formattedLabels);
+
+			res.send(formattedLabels);
+		} catch (err) {
+			console.error("Error calling DetectLabels: ", err);
+			res.status(500).send(err);
+		}
 	}
-});
+);
 
 app.listen(port, () => {
 	console.log(`Server listening at http://localhost:${port}`);
