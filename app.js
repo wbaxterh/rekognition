@@ -11,6 +11,9 @@ require("dotenv").config(); // Ensure dotenv is setup to load environment variab
 const app = express();
 const port = 3000;
 
+app.use(express.json({ limit: "100mb" })); // Increase JSON body size limit
+app.use(express.urlencoded({ limit: "100mb", extended: true })); // Increase URL-encoded body size limit
+
 // Configure the AWS Rekognition client
 const rekognitionClient = new RekognitionClient({
 	region: process.env.AWS_REGION,
