@@ -10,6 +10,7 @@
 	"author": "Wesley Huber <wesleybaxterhuber@gmail.com> (https://weshuber.com/)",
 	"license": "MIT",
 	"dependencies": {
+		"@aws-sdk/client-bedrock-runtime": "^3.568.0",
 		"@aws-sdk/client-rekognition": "^3.565.0",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
