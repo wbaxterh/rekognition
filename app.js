@@ -60,7 +60,7 @@ const generateInstagramCaption = async (tags) => {
 
 	// Construct a prompt from the image tags.
 	const prompt =
-		`Generate a creative Instagram caption for a photo. Only list 3 ideas for captions in order with hashtags and emojis. Don't say anything else. Use the following characteristics from computer vision on an image: ` +
+		`Generate a creative Instagram caption for a photo. Only list 3 ideas for captions in order with hashtags and emojis after the caption. Don't say anything else. Use the following characteristics from computer vision on an image: ` +
 		tags
 			.map((tag) => `${tag.Name} (${tag.Confidence.toFixed(1)}% confidence)`)
 			.join(", ") +
