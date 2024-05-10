@@ -69,7 +69,7 @@ const generateInstagramCaption = async (tags) => {
 	// Prepare the payload.
 	const payload = {
 		prompt: prompt,
-		max_tokens: 150, // Adjust the token limit as needed for your caption's typical length.
+		max_tokens: 200, // Adjust the token limit as needed for your caption's typical length.
 		temperature: 0.7, // Slightly higher temperature for more creative outputs.
 	};
 
@@ -129,6 +129,7 @@ app.post("/analyze-image", upload.single("image"), async (req, res) => {
 			Confidence: label.Confidence,
 		}));
 		const caption = await generateInstagramCaption(formattedTags);
+		console.log("Full Caption:", caption); // Log the full caption to verify its length and content
 		res.json({ labels: formattedTags, caption });
 	} catch (err) {
 		console.error("Error processing image: ", err);
