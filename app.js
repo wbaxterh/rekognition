@@ -60,7 +60,7 @@ const generateInstagramCaption = async (tags) => {
 
 	// Construct a prompt from the image tags.
 	const prompt =
-		`Generate a creative Instagram caption for a photo. Only list 3 ideas for captions labeled like this "1:" in order with hashtags and emojis after the caption. Don't add anything else except for the numbers and captions. Do not add a confidence score at the end. Only put emojis after the caption text and right before the hashtags. Limit to 3 emojis. Limit captions to 75 words. Use the following characteristics from computer vision on an image: ` +
+		`Generate a creative Instagram caption for a photo. Strictly adhere to these instructions: Only list 3 ideas for captions labeled starting with "1:" in order. Add hashtags and emojis after the caption. Do not add anything else except for the numbers and captions. Do not add a confidence score at the end. Only put emojis after the caption text and right before the hashtags. Limit to 3 emojis. Limit captions to 75 words. Use the following characteristics from computer vision on an image: ` +
 		tags
 			.map((tag) => `${tag.Name} (${tag.Confidence.toFixed(1)}% confidence)`)
 			.join(", ") +
