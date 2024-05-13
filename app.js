@@ -12,13 +12,17 @@ const multer = require("multer");
 const express = require("express");
 
 require("dotenv").config(); // Ensure dotenv is setup to load environment variables
+const { connectDB } = require("./config/db");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 const port = 3000;
 
+connectDB();
+
 app.use(express.json({ limit: "100mb" })); // Increase JSON body size limit
 app.use(express.urlencoded({ limit: "100mb", extended: true })); // Increase URL-encoded body size limit
-
+app.use("/users", userRoutes);
 // Configure the AWS Rekognition client
 const rekognitionClient = new RekognitionClient({
 	region: process.env.AWS_REGION,
@@ -28,13 +32,13 @@ const rekognitionClient = new RekognitionClient({
 	},
 });
 // Create a Bedrock Runtime client
-const client = new BedrockRuntimeClient({
-	region: process.env.AWS_REGION,
-	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-	},
-});
+// const client = new BedrockRuntimeClient({
+// 	region: process.env.AWS_REGION,
+// 	credentials: {
+// 		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+// 		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+// 	},
+// });
 console.log("Aws region == ", process.env.AWS_REGION);
 // Setup multer for file uploads
 const storage = multer.memoryStorage();
@@ -89,23 +93,23 @@ const generateInstagramCaption = async (tags) => {
 };
 
 // Example usage with tags from AWS Rekognition.
-const tags = [
-	{ Name: "Food", Confidence: 100 },
-	{ Name: "Lunch", Confidence: 100 },
-	{ Name: "Meal", Confidence: 100 },
-	{ Name: "Sandwich", Confidence: 99.815 },
-	{ Name: "Bread", Confidence: 89.861 },
-	{ Name: "Burger", Confidence: 85.126 },
-	{ Name: "Food Presentation", Confidence: 76.024 },
-];
+// const tags = [
+// 	{ Name: "Food", Confidence: 100 },
+// 	{ Name: "Lunch", Confidence: 100 },
+// 	{ Name: "Meal", Confidence: 100 },
+// 	{ Name: "Sandwich", Confidence: 99.815 },
+// 	{ Name: "Bread", Confidence: 89.861 },
+// 	{ Name: "Burger", Confidence: 85.126 },
+// 	{ Name: "Food Presentation", Confidence: 76.024 },
+// ];
 
-generateInstagramCaption(tags)
-	.then((caption) => {
-		console.log("Generated Caption:", caption);
-	})
-	.catch((err) => {
-		console.error("Error generating caption:", err);
-	});
+// generateInstagramCaption(tags)
+// 	.then((caption) => {
+// 		console.log("Generated Caption:", caption);
+// 	})
+// 	.catch((err) => {
+// 		console.error("Error generating caption:", err);
+// 	});
 
 app.post("/analyze-image", upload.single("image"), async (req, res) => {
 	if (!req.file) {
