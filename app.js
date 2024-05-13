@@ -8,6 +8,7 @@ const {
 	InvokeModelCommand,
 } = require("@aws-sdk/client-bedrock-runtime");
 
+const cors = require("cors");
 const multer = require("multer");
 const express = require("express");
 
@@ -23,6 +24,14 @@ connectDB();
 app.use(express.json({ limit: "100mb" })); // Increase JSON body size limit
 app.use(express.urlencoded({ limit: "100mb", extended: true })); // Increase URL-encoded body size limit
 app.use("/users", userRoutes);
+// Enable CORS for all requests
+app.use(
+	cors({
+		origin: "https://gramcracker.io", // Adjust this to match the domain of your frontend
+		methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+		credentials: true, // Allow sending cookies and credentials headers
+	})
+);
 // Configure the AWS Rekognition client
 const rekognitionClient = new RekognitionClient({
 	region: process.env.AWS_REGION,
