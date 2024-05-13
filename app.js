@@ -27,7 +27,7 @@ app.use("/users", userRoutes);
 // Enable CORS for all requests
 // CORS options
 const corsOptions = {
-	origin: "https://gramcracker.io", // Allow only this origin to access
+	origin: "*", // Allow only this origin to access
 	methods: "GET,POST,PUT,DELETE,OPTIONS", // Allowable methods
 	allowedHeaders: "Content-Type,Authorization", // Headers that are allowed
 	credentials: true, // Allow cookies to be sent
