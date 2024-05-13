@@ -25,13 +25,16 @@ app.use(express.json({ limit: "100mb" })); // Increase JSON body size limit
 app.use(express.urlencoded({ limit: "100mb", extended: true })); // Increase URL-encoded body size limit
 app.use("/users", userRoutes);
 // Enable CORS for all requests
-app.use(
-	cors({
-		origin: "https://gramcracker.io", // Adjust this to match the domain of your frontend
-		methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-		credentials: true, // Allow sending cookies and credentials headers
-	})
-);
+// CORS options
+const corsOptions = {
+	origin: "https://gramcracker.io", // Allow only this origin to access
+	methods: "GET,POST,PUT,DELETE,OPTIONS", // Allowable methods
+	allowedHeaders: "Content-Type,Authorization", // Headers that are allowed
+	credentials: true, // Allow cookies to be sent
+	optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+};
+app.use(cors(corsOptions));
+
 // Configure the AWS Rekognition client
 const rekognitionClient = new RekognitionClient({
 	region: process.env.AWS_REGION,
