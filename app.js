@@ -13,14 +13,14 @@ const multer = require("multer");
 const express = require("express");
 // Enable CORS for all requests
 // CORS options
-const corsOptions = {
-	origin: "*", // Allow only this origin to access
-	methods: "GET,POST,PUT,DELETE,OPTIONS", // Allowable methods
-	allowedHeaders: "Content-Type,Authorization", // Headers that are allowed
-	credentials: true, // Allow cookies to be sent
-	optionsSuccessStatus: 200, // Some legacy browsers choke on 204
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+// 	origin: "*", // Allow only this origin to access
+// 	methods: "GET,POST,PUT,DELETE,OPTIONS", // Allowable methods
+// 	allowedHeaders: "Content-Type,Authorization", // Headers that are allowed
+// 	credentials: true, // Allow cookies to be sent
+// 	optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+// };
+// app.use(cors(corsOptions));
 require("dotenv").config(); // Ensure dotenv is setup to load environment variables
 const { connectDB } = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
