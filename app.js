@@ -26,6 +26,7 @@ const { connectDB } = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
+app.use(cors());
 const port = 3000;
 
 connectDB();
