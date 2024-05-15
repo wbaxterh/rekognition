@@ -26,22 +26,17 @@ exports.registerUser = async (req, res) => {
 			},
 		};
 
-		jwt.sign(
-			payload,
-			process.env.JWT_SECRET, // Make sure to use the JWT_SECRET from your .env file
-			{ expiresIn: "1h" }, // Token expires in 1 hour
-			(err, token) => {
-				if (err) {
-					throw err;
-				}
-				res.status(201).json({
-					msg: "User created",
-					token: token, // Send the token to the client
-					email: email,
-					userId: newUser.insertedId,
-				});
+		jwt.sign(payload, "jwtPrivateKey", (err, token) => {
+			if (err) {
+				throw err;
 			}
-		);
+			res.status(201).json({
+				msg: "User created",
+				token: token, // Send the token to the client
+				email: email,
+				userId: newUser.insertedId,
+			});
+		});
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send("Server error");
