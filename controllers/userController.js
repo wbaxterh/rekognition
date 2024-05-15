@@ -6,8 +6,8 @@ exports.registerUser = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
-		const user = await findUserByEmail({ email: email });
-		if (user) {
+		const existingUser = await findUserByEmail({ email: email });
+		if (existingUser) {
 			return res.status(400).json({ msg: "User already exists" });
 		}
 
@@ -19,9 +19,31 @@ exports.registerUser = async (req, res) => {
 			password: hashedPassword,
 		});
 
-		res.status(201).json({ msg: "User created", userId: newUser.insertedId });
+		// User creation was successful, create a JWT token for the new user
+		const payload = {
+			user: {
+				id: newUser.insertedId.toString(), // Make sure the ID is in the correct format
+			},
+		};
+
+		jwt.sign(
+			payload,
+			process.env.JWT_SECRET, // Make sure to use the JWT_SECRET from your .env file
+			{ expiresIn: "1h" }, // Token expires in 1 hour
+			(err, token) => {
+				if (err) {
+					throw err;
+				}
+				res.status(201).json({
+					msg: "User created",
+					token: token, // Send the token to the client
+					email: email,
+					userId: newUser.insertedId,
+				});
+			}
+		);
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 		res.status(500).send("Server error");
 	}
 };
