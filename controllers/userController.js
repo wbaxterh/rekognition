@@ -39,7 +39,7 @@ exports.registerUser = async (req, res) => {
 		});
 	} catch (err) {
 		console.error(err.message);
-		res.status(500).send("Server error");
+		res.status(500).send({ msg: "Server error" });
 	}
 };
 
@@ -51,13 +51,13 @@ exports.loginUser = async (req, res) => {
 		const user = await findUserByEmail({ email: email });
 		console.log("result from user == ", user);
 		if (!user) {
-			return res.status(404).send("User not found");
+			return res.status(404).send({ msg: "User not found" });
 		}
 
 		// Compare password with hashed password in database
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
-			return res.status(400).send("Invalid credentials");
+			return res.status(400).send({ msg: "Invalid credentials" });
 		}
 
 		// User matched, create JWT payload
@@ -80,7 +80,7 @@ exports.loginUser = async (req, res) => {
 		);
 	} catch (err) {
 		console.error(err.message);
-		res.status(500).send("Server error");
+		res.status(500).send({ msg: "Server error" });
 	}
 };
 
